@@ -17,7 +17,7 @@ constants = """0x428a2f98 0x71374491 0xb5c0fbcf 0xe9b5dba5 0x3956c25b 0x59f111f1
 0x19a4c116 0x1e376c08 0x2748774c 0x34b0bcb5 0x391c0cb3 0x4ed8aa4a 0x5b9cca4f 0x682e6ff3
 0x748f82ee 0x78a5636f 0x84c87814 0x8cc70208 0x90befffa 0xa4506ceb 0xbef9a3f7 0xc67178f2"""
 constants = constants.split(" ")
-print(h7)
+#print(h7)
 def tobx(x):    
     res = ""
     #find multiple of 2
@@ -132,4 +132,11 @@ def endianness(length):
         o.append((i))
     return(o)
 
-sha256("hello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello worldhello world")
+def rightrotate(num,times):
+    #at each time delete leftmost and add the deleted to the leftmost
+    for i in range(times):
+        #tmp = num
+        print(len(num[0:7]))
+        num = num[7]+num[0:7]
+    return(num)
+print(rightrotate("10010010", 3))
