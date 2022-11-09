@@ -117,6 +117,7 @@ def sha256(n):
                 array[blockid].append(o)
                 o=""
     print(array)
+    ############################
         
 
 
@@ -136,7 +137,38 @@ def rightrotate(num,times):
     #at each time delete leftmost and add the deleted to the leftmost
     for i in range(times):
         #tmp = num
-        print(len(num[0:7]))
+        #print(len(num[0:7]))
         num = num[7]+num[0:7]
     return(num)
-print(rightrotate("10010010", 3))
+def rightshift(num,times):
+    #at each time delete leftmost and add zero to the leftmost
+    for i in range(times):
+        #tmp = num
+        #print(len(num[0:7]))
+        num = "0"+num[0:7]
+    return(num)
+def xor(x,y):
+    o= ""
+    for i in range(8):
+        if x[i] != y[i] and y[i] == 1 or x[i] == 1:
+            o+="1"
+        else:
+            o+="0"
+    return o
+def AND(x,y):
+    o= ""
+    for i in range(8):
+        o+= str(int(x[i])*int(y[i]))
+    return o
+
+
+
+def main():
+    pass
+
+
+
+
+
+
+main()
