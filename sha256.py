@@ -1,12 +1,18 @@
 import sqlite3
-h0 = 0x6a09e667
-h1 = 0xbb67ae85
-h2 = 0x3c6ef372
-h3 = 0xa54ff53a
-h4 = 0x510e527f
-h5 = 0x9b05688c
-h6 = 0x1f83d9ab
-h7 = 0x5be0cd19
+a = 0x6a09e667
+b = 0xbb67ae85
+c = 0x3c6ef372
+d = 0xa54ff53a
+e = 0x510e527f
+f = 0x9b05688c
+g = 0x1f83d9ab
+h = 0x5be0cd19
+zeros32 = ""
+for x in range (32):
+    zeros32.append("0")
+chunk48 = []
+for y in range(48):
+    chunk48.append (zeros32)
 
 constants = """0x428a2f98 0x71374491 0xb5c0fbcf 0xe9b5dba5 0x3956c25b 0x59f111f1 0x923f82a4 0xab1c5ed5
 0xd807aa98 0x12835b01 0x243185be 0x550c7dc3 0x72be5d74 0x80deb1fe 0x9bdc06a7 0xc19bf174
@@ -83,6 +89,7 @@ def calc(n):
     #orgy 362
     
 def sha256(n):
+    n = str(n)
     binarylist = []
     for e in n:
         c = convertChar((e))
@@ -116,7 +123,15 @@ def sha256(n):
             if step!=0 and step%4==0:
                 array[blockid].append(o)
                 o=""
-    print(array)
+    for w in array:
+        w+=chunk48
+        for i in range(16,64):
+            s0 = xor(xor(rightrotate(w[i-15] , 7) , rightrotate(w[i-15] , 18)) , rightshift(w[i-15] , 3))
+            s1 = xor(xor(rightrotate(w[i- 2] , 17) , rightrotate(w[i- 2] , 19)) , rightshift(w[i- 2] , 10))
+            w[i] = w[i-16] + s0 + w[i-7] + s1
+
+            
+
     ############################
         
 
@@ -164,7 +179,7 @@ def AND(x,y):
 
 
 def main():
-    pass
+    sha256("132412343546456345638947568937465987649857623984765982374659827346598273645982736598273645982736459827364598726349587263498576239845762398475629384756298374569283746592837465928376459823746")
 
 
 
@@ -172,3 +187,4 @@ def main():
 
 
 main()
+         
