@@ -35,7 +35,7 @@ fn sigma1(x: u32) u32 {
 fn Sigma0(x: u32) u32 {
     var a = std.math.rotr(u32, x, 2);
     a = a ^ std.math.rotr(u32, x, 13);
-    a = a ^ std.math.rotr(u32, x, 25);
+    a = a ^ std.math.rotr(u32, x, 22);
     return a;
 }
 fn Sigma1(x: u32) u32 {
@@ -60,11 +60,48 @@ pub fn main() void {
     std.mem.writeInt(u64, buffer[56..64], len_bits, .big);
 
     for (0..16) |i| {
-        w[i] = std.mem.readInt(u32, buffer[i * 4 .. i * 4 + 4], .big);
+        const start = i * 4;
+        // The [0..4] at the end coerces the slice into a pointer to a 4-byte array
+        w[i] = std.mem.readInt(u32, buffer[start..][0..4], .big);
     }
     for (16..64) |i| {
-        var s0=sigma0(w[i-15]);
-        var s1=sigma1(w[i-2]);
-        w[i] = s0 %+ s1 %+ w[i - 7] %+ w[i - 16];
+        const s0 = sigma0(w[i - 15]);
+        const s1 = sigma1(w[i - 2]);
+
+        // We use a temporary variable to make it super clear for the compiler
+        w[i] = s0 +% s1 +% w[i - 7] +% w[i - 16];
     }
+    var a = h0;
+    var b = h1;
+    var c = h2;
+    var d = h3;
+    var e = h4;
+    var f = h5;
+    var g = h6;
+    var h = h7;
+    for (0..64) |i| {
+        // 1. Calculate the Chaos (T1 and T2)
+        const t1 = h +% Sigma1(e) +% ch(e, f, g) +% k[i] +% w[i];
+        const t2 = Sigma0(a) +% maj(a, b, c);
+
+        // 2. The Shift (Musical Chairs)
+        // You MUST do this in exact order so you don't overwrite values early
+        h = g;
+        g = f;
+        f = e;
+        e = d +% t1; // e gets injected with t1
+        d = c;
+        c = b;
+        b = a;
+        a = t1 +% t2; // a gets the combined chaos
+    }
+    h0 +%= a;
+    h1 +%= b;
+    h2 +%= c;
+    h3 +%= d;
+    h4 +%= e;
+    h5 +%= f;
+    h6 +%= g;
+    h7 +%= h;
+    std.debug.print("{x:0>8}{x:0>8}{x:0>8}{x:0>8}{x:0>8}{x:0>8}{x:0>8}{x:0>8}\n", .{ h0, h1, h2, h3, h4, h5, h6, h7 });
 }
